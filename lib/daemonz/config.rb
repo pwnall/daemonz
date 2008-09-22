@@ -1,0 +1,89 @@
+require 'erb'
+require 'yaml'
+
+module Daemonz
+  class << self
+    attr_reader :config
+  end
+  
+  # figure out the plugin's configuration 
+  def self.configure(config_file)
+    load_configuration config_file    
+    
+    config[:root_path] ||= RAILS_ROOT
+    config[:enabled] ||= true
+    config[:master_file] ||= File.join RAILS_ROOT, "tmp", "pids", "daemonz.master.pid"
+    config[:is_master] = Daemonz.claim_master
+  end
+  
+  # load and parse the config file
+  def self.load_configuration(config_file)
+    if File.exist? config_file
+      file_contents = File.read config_file
+      erb_result = ERB.new(file_contents).result
+      @config = YAML.load erb_result
+    else
+      logger.warn "Daemonz configuration not found - #{config_file}"
+      @config = {}
+    end
+  end
+  
+  class << self
+    attr_reader :daemons
+  end
+  
+  # process the daemon configuration
+  def self.configure_daemons    
+    @daemons = []
+    config[:daemons].each do |name, daemon_config|
+      next if config[:disabled]
+      daemon = { :name => name }
+            
+      # compute the daemon startup / stop commands 
+      ['start', 'stop'].each do |command|
+        daemon_binary = daemon_config[:binary] || daemon_config["#{command}_binary".to_sym]
+        if daemon_config[:absolute_binary]
+          daemon_path = `which #{daemon_binary}`.strip
+          unless daemon_config[:kill_patterns]
+            logger.error "Daemonz ignoring #{name}; using an absolute binary path but no custom process kill patterns"
+            break
+          end
+        else
+          daemon_path = File.join config[:root_path], daemon_binary || ''
+        end
+        unless daemon_binary and File.exists? daemon_path
+          logger.error "Daemonz ignoring #{name}; the #{command} file is missing"
+          break
+        end
+        
+        unless daemon_config[:absolute_binary]
+          begin
+            File.chmod(File.stat(daemon_path).mode | 0111, daemon_path)
+          rescue Exception => e
+            # maybe it works, maybe it doesn't... :)
+            pp e
+            print e.backtrace.join("\n") + "\n"
+          end
+        end
+        
+        daemon_args = daemon_config[:args] || daemon_config["#{command}_args".to_sym]
+        daemon_cmdline = "#{daemon_path} #{daemon_args}"
+        daemon[command.to_sym] = {:path => daemon_path, :cmdline => daemon_cmdline}
+      end
+      next unless daemon[:stop]
+      
+      # kill patterns
+      daemon[:kill_patterns] = daemon_config[:kill_patterns] || [daemon[:start][:path]]
+      
+      # pass-through params
+      daemon[:pids] = daemon_config[:pids]
+      unless daemon[:pids]
+        logger.error "Daemonz ignoring #{name}; no pid file pattern specified"
+        next
+      end
+      daemon[:delay_before_kill] = daemon_config[:delay_before_kill] || 0.2
+      
+      @daemons << daemon
+    end
+  end
+end

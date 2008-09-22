@@ -1,0 +1,14 @@
+Daemonz
+=======
+
+Automatically starts and stops the daemons in your application.
+
+Please read and modify the automatically generated config/daemonz.yml. The initial
+version illustrates the setup needed to start ferret and starling. The configuration
+file is ran through Erb, so you can go crazy.
+
+You don't need to do anything in your code for daemonz to work. It will start the
+daemons when your server starts, and stop them when your server exits. It does
+work with multiple servers.
+
+Copyright (c) 2008 Victor Costan, released under the MIT license

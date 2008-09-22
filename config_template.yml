@@ -1,0 +1,24 @@
+--- 
+:daemons: 
+  ferret: 
+    :pids: tmp/pids/ferret*.pid
+    :start_binary: script/ferret_server
+    :stop_binary: script/ferret_server
+    :start_args: -e <%= RAILS_ENV %> start
+    :stop_args: -e <%= RAILS_ENV %> stop
+    :delay_before_kill: 0.35
+    :disabled: false
+  starling: 
+    :pids: tmp/pids/starling*.pid
+    :binary: starling
+    :absolute_binary: true
+    :start_args: -d -h 127.0.0.1 -p 16020 -P <%= RAILS_ROOT %>/tmp/pids/starling.pid -q <%= RAILS_ROOT %>/tmp -L <%= RAILS_ROOT %>/log/starling.log
+    :kill_patterns: <%= RAILS_ROOT %>/log/starling.log
+    :stop_args: ''
+    :delay_before_kill: 0.2
+    :disabled: false
+    
+
+:disabled: false
+:root_path: <%= RAILS_ROOT %>
+:logger: stdout
