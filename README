@@ -1,7 +1,7 @@
 Daemonz
 =======
 
-Automatically starts and stops the daemons in your application.
+Automatically starts and stops the daemons in a Rails application.
 
 Please read and modify the automatically generated config/daemonz.yml. The initial
 version illustrates the setup needed to start ferret and starling. The configuration

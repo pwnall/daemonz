@@ -22,3 +22,6 @@
 :disabled: false
 :root_path: <%= RAILS_ROOT %>
 :logger: stdout
+:disabled_for: 
+- 'rake'
+- 'script/generate'

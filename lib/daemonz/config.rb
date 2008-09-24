@@ -5,17 +5,35 @@ module Daemonz
   class << self
     attr_reader :config
   end
+
+  # compute whether daemonz should be enabled or not
+  def self.disabled?
+    return true unless config[:disabled]
+    config[:disabled_for].each do |suffix|
+      if suffix == $0[-suffix.length, suffix.length]
+        config[:disabled] = true # cache the expensive computation
+        return true
+      end
+    end
+    return false
+  end
   
   # figure out the plugin's configuration 
   def self.configure(config_file)
     load_configuration config_file    
     
     config[:root_path] ||= RAILS_ROOT
-    config[:enabled] ||= true
+    config[:disabled] ||= false
     config[:master_file] ||= File.join RAILS_ROOT, "tmp", "pids", "daemonz.master.pid"
-    config[:is_master] = Daemonz.claim_master
+    config[:disabled_for] ||= ['rake', 'script/generate']
+    
+    if self.disabled?
+      config[:is_master] = false
+    else
+      config[:is_master] = Daemonz.claim_master
+    end
   end
-  
+    
   # load and parse the config file
   def self.load_configuration(config_file)
     if File.exist? config_file
