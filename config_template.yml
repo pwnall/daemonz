@@ -8,6 +8,7 @@
     :stop_args: -e <%= RAILS_ENV %> stop
     :delay_before_kill: 0.35
     :disabled: false
+    :start_order: 1
   starling: 
     :pids: tmp/pids/starling*.pid
     :binary: starling

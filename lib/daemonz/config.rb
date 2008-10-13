@@ -8,7 +8,7 @@ module Daemonz
 
   # compute whether daemonz should be enabled or not
   def self.disabled?
-    return true unless config[:disabled]
+    return true if config[:disabled]
     config[:disabled_for].each do |suffix|
       if suffix == $0[-suffix.length, suffix.length]
         config[:disabled] = true # cache the expensive computation
@@ -24,6 +24,7 @@ module Daemonz
     
     config[:root_path] ||= RAILS_ROOT
     config[:disabled] ||= false
+    config[:disabled] = false if config[:disabled] == 'false'
     config[:master_file] ||= File.join RAILS_ROOT, "tmp", "pids", "daemonz.master.pid"
     config[:disabled_for] ||= ['rake', 'script/generate']
     
@@ -100,8 +101,26 @@ module Daemonz
         next
       end
       daemon[:delay_before_kill] = daemon_config[:delay_before_kill] || 0.2
+      daemon[:start_order] = daemon_config[:start_order]
       
       @daemons << daemon
+    end
+    
+    # sort by start_order, then by name
+    @daemons.sort! do |a, b|
+      if a[:start_order]
+        if b[:start_order]
+          if a[:start_order] != b[:start_order]
+            next a[:start_order] <=> b[:start_order]
+          else
+            next a[:name] <=> b[:name]
+          end
+        else
+          next 1
+        end
+      else
+        next a[:name] <=> b[:name]
+      end
     end
   end
 end

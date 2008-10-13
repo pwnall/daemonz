@@ -6,7 +6,7 @@ module Daemonz
   end
   
   def self.stop_daemons
-    @daemons.each { |daemon| stop_daemon daemon }
+    @daemons.reverse.each { |daemon| stop_daemon daemon }
   end
   
   def self.start_daemon(daemon)
