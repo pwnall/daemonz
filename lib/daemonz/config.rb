@@ -77,11 +77,14 @@ module Daemonz
         
         unless daemon_config[:absolute_binary]
           begin
-            File.chmod(File.stat(daemon_path).mode | 0111, daemon_path)
+            binary_perms = File.stat(daemon_path).mode
+            if binary_perms != (binary_perms | 0111)
+              File.chmod(binary_perms | 0111, daemon_path)
+            end
           rescue Exception => e
-            # maybe it works, maybe it doesn't... :)
-            pp e
-            print e.backtrace.join("\n") + "\n"
+            # chmod might fail due to lack of permissions
+            logger.error "Daemonz failed to make #{name} binary executable - #{e.class.name}: #{e}\n"
+            logger.info e.backtrace.join("\n") + "\n"
           end
         end
         
