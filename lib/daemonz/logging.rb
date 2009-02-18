@@ -12,6 +12,8 @@ module Daemonz
     when 'stderr'
       @logger = Logger.new(STDERR)
       @logger.level = Logger::DEBUG
+    when 'rails'
+      @logger = RAILS_DEFAULT_LOGGER
     end
   end
 end

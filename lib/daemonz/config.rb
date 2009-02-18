@@ -4,6 +4,9 @@ require 'yaml'
 module Daemonz
   class << self
     attr_reader :config
+    
+    # Set by the rake tasks.
+    attr_accessor :keep_daemons_at_exit
   end
 
   # compute whether daemonz should be enabled or not
@@ -34,6 +37,9 @@ module Daemonz
     config[:disabled] = false if config[:disabled] == 'false'
     config[:master_file] ||= File.join RAILS_ROOT, "tmp", "pids", "daemonz.master.pid"
     
+    config[:logger] &&= options[:override_logger]
+    self.configure_logger
+
     if self.disabled?
       config[:is_master] = false
     else
