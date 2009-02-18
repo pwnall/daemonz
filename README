@@ -6,12 +6,22 @@ Automatically starts and stops the daemons in a Rails application.
 Install with:
 script/plugin install git://github.com/costan/daemonz.git
 
-Please read and modify the automatically generated config/daemonz.yml. The initial
-version illustrates the setup needed to start ferret and starling. The configuration
-file is ran through Erb, so you can go crazy.
+Please read and modify the automatically generated config/daemonz.yml. The
+initial version illustrates the setup needed to start ferret and starling. The
+configuration file is ran through Erb, so you can go crazy.
 
-You don't need to do anything in your code for daemonz to work. It will start the
-daemons when your server starts, and stop them when your server exits. It does
-work with multiple servers.
+You don't need to do anything in your code for daemonz to work. It will start
+the daemons when your server starts, and stop them when your server exits. It
+does work with multiple servers.
+
+You can test your daemonz configuration with rake, as shown below. Keep in mind
+that the Rake tasks are only provided for testing, and you should not use them
+while your Rails application is running. Nothing bad should happen if you run
+the tasks by mistake, but things may go astray if you mix the Rake tasks with
+application starts and stops.
+
+rake daemons:start # Starts your daemons (for testing only)
+rake daemons:stop # Stops your daemons (for testing only)
+
 
 Copyright (c) 2008 Victor Costan, released under the MIT license

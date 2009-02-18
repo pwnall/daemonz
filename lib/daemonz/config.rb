@@ -15,18 +15,24 @@ module Daemonz
         return true
       end
     end
+    config[:disabled_for] = [] # cache the expensive computation
     return false
   end
   
   # figure out the plugin's configuration 
-  def self.configure(config_file)
-    load_configuration config_file    
+  def self.configure(config_file, options = {})
+    load_configuration config_file
     
     config[:root_path] ||= RAILS_ROOT
-    config[:disabled] ||= false
+    if options[:force_enabled]
+      config[:disabled] = false
+      config[:disabled_for] = []
+    else
+      config[:disabled] ||= false
+      config[:disabled_for] ||= ['rake', 'script/generate']
+    end
     config[:disabled] = false if config[:disabled] == 'false'
     config[:master_file] ||= File.join RAILS_ROOT, "tmp", "pids", "daemonz.master.pid"
-    config[:disabled_for] ||= ['rake', 'script/generate']
     
     if self.disabled?
       config[:is_master] = false
