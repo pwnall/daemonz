@@ -11,14 +11,18 @@ module Daemonz
 
   # compute whether daemonz should be enabled or not
   def self.disabled?
+    return config[:cached_disabled] if config.has_key? :cached_disabled
+    config[:cached_disabled] = disabled_without_cache!
+  end
+  
+  def self.disabled_without_cache!
     return true if config[:disabled]
+    return true if config[:disabled_in].include? RAILS_ENV
     config[:disabled_for].each do |suffix|
       if suffix == $0[-suffix.length, suffix.length]
-        config[:disabled] = true # cache the expensive computation
         return true
       end
     end
-    config[:disabled_for] = [] # cache the expensive computation
     return false
   end
   
@@ -30,9 +34,11 @@ module Daemonz
     if options[:force_enabled]
       config[:disabled] = false
       config[:disabled_for] = []
+      config[:disabled_in] = []
     else
       config[:disabled] ||= false
       config[:disabled_for] ||= ['rake', 'script/generate']
+      config[:disabled_in] ||= ['test']
     end
     config[:disabled] = false if config[:disabled] == 'false'
     config[:master_file] ||= File.join RAILS_ROOT, "tmp", "pids", "daemonz.master.pid"

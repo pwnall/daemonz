@@ -1,10 +1,11 @@
-Daemonz
-=======
+h1. Daemonz
 
-Automatically starts and stops the daemons in a Rails application.
+bq. Automatically starts and stops the daemons in a Rails application.
 
 Install with:
+<pre>
 script/plugin install git://github.com/costan/daemonz.git
+</pre>
 
 Please read and modify the automatically generated config/daemonz.yml. The
 initial version illustrates the setup needed to start ferret and starling. The
@@ -19,9 +20,26 @@ that the Rake tasks are only provided for testing, and you should not use them
 while your Rails application is running. Nothing bad should happen if you run
 the tasks by mistake, but things may go astray if you mix the Rake tasks with
 application starts and stops.
-
+<pre>
 rake daemons:start # Starts your daemons (for testing only)
-rake daemons:stop # Stops your daemons (for testing only)
+rake daemons:stop  # Stops your daemons (for testing only)
+</pre>
 
+Using the default configuration, daemons are not running during tests. The
+snippet below shows how you can have daemons running during a specific test.
+<pre>
+class DaemonsTest < ActionController::IntegrationTest
+  # If this isn't here, Rails runs the entire test in a transaction, so daemons'
+  # database changes aren't visible. Also, if you share the database with
+  # daemons, sqlite won't cut it.
+  self.use_transactional_fixtures = false
+
+  test "something needing daemons" do
+    Daemonz.with_daemons do
+      # daemons will be alive while this code is executed
+    end
+  end
+end
+</pre>
 
 Copyright (c) 2008 Victor Costan, released under the MIT license

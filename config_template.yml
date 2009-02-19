@@ -74,7 +74,14 @@
 
 # daemonz is loaded every time the Rails framework is loaded. Sometimes
 # (e.g. when performing migrations) daemons aren't required, so we shouldn't
-# have to wait for the few seconds it takes to start / stop daemons. 
+# have to wait for the few seconds it takes to start / stop daemons.
+
+# Daemons will not be started / stopped when the name of the binary that's
+# loading Rails ($0) is one of the following.
 :disabled_for: 
 - 'rake'
 - 'script/generate'
+
+# Daemons will not be started for the following environments. 
+:disabled_in:
+- 'test'

@@ -1,6 +1,16 @@
 require 'English'
 
 module Daemonz
+  # Starts daemons, yields, stops daemons. Intended for tests.
+  def self.with_daemons(logger = 'rails')
+    begin
+      safe_start :force_enabled => true, :override_logger => logger
+      yield
+    ensure
+      safe_stop :force_enabled => true
+    end
+  end
+  
   # Complete startup used by rake:start and at Rails plug-in startup.
   def self.safe_start(options = {})
     daemonz_config = File.join(RAILS_ROOT, 'config', 'daemonz.yml')
@@ -26,7 +36,7 @@ module Daemonz
       Daemonz.release_master_lock
     end
   end
-  
+    
   def self.start_daemons!
     @daemons.each { |daemon| start_daemon! daemon }
   end
