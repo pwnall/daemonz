@@ -23,6 +23,17 @@ Daemonz comes with a few configuration examples that can also be used as they
 are, by removing the <code>:disabled: true</code> line. Please contribute your
 configuration if you think others could use it.
 
+h2. Daemon Generator
+
+Daemonz includes a generator for a daemon intended to do background processing
+inside a Rails environment. If you're writing your first daemon, give it a try.
+The scaffolded code includes the configuration file, a daemon skeleton using the 
+<code>simple-daemon</code> gem, and an integration test skeleton.
+
+<pre>
+script/generate daemon YourDaemonName
+</pre>
+
 h2. Testing
 
 You can test your daemonz configuration with rake, as shown below. Keep in mind

@@ -5,10 +5,8 @@
 
 ---
 :daemons: 
-  # Daemon configurations used to be placed here, but that practice is
-  # deprecated. For better maintainability, each daemon has its own
-  # configuration file in the config/daemonz folder. You can find some useful
-  # examples there.
+  # Daemon configurations placed here will be read as if they were in a file in
+  # config/daemonz. This is less maintainable if you have more than one daemon.
     
 # The base path for daemon binaries specified in binary, start_binary and
 # stop_binary.
@@ -29,6 +27,8 @@
 :disabled_for: 
 - 'rake'
 - 'script/generate'
+- 'script/destroy'
+- 'script/plugin'
 
 # Daemons will not be started for the following environments. 
 :disabled_in:
