@@ -59,6 +59,25 @@ module Daemonz
       file_contents = File.read config_file
       erb_result = ERB.new(file_contents).result
       @config = YAML.load erb_result
+      @config[:daemons] ||= {}
+      
+      config_dir = File.join(File.dirname(config_file), 'daemonz')
+      if File.exist? config_dir
+        Dir.entries(config_dir).each do |entry|
+          daemons_file = File.join(config_dir, entry) 
+          next unless File.file? daemons_file
+          
+          file_contents = File.read daemons_file
+          erb_result = ERB.new(file_contents).result          
+          daemons = YAML.load erb_result
+          daemons.keys.each do |daemon|
+            if @config[:daemons].has_key? daemon
+              logger.warn "Daemonz daemon file #{entry} overwrites daemon #{daemon} defined in daemonz.yml"
+            end
+            @config[:daemons][daemon] = daemons[daemon]
+          end
+        end
+      end
     else
       logger.warn "Daemonz configuration not found - #{config_file}"
       @config = {}

@@ -1,0 +1,38 @@
+# Daemonz example: configuration for ferret.
+#
+# daemonz starts the daemons according to the alphabetic order of their 
+# configuration file names. start_order can be used to override this order.
+# Daemons will be stopped in the reverse order of their starting order.
+#
+# daemonz likes to ensure that multiple instances of a daemon don't run at the
+# same time, as this can be fatal for daemons with on-disk state, like ferret.
+# So daemonz ensures that a daemon is dead before starting it, and right after
+# stopping it. This is achieved using the following means:
+#   * Stop commands: first, daemonz uses the stop command supplied in the daemon
+#                    configuration
+#   * PID files: if the daemon has .pid files, daemonz tries to read the file
+#                and find the corresponding processes, then tree-kills them
+#   * Process table: if possible, daemonz dumps the process table, looks for the 
+#                    processes that look like the daemon, and tree-kills them
+#   * Pattern matching: processes whose command lines have the same arguments as
+#                       those given to daemon "look like" that daemon
+#   * Tree killing: a daemon is killed by killing its main process, together
+#                   with all processes descending from that process; a process
+#                   is first sent SIGTERM and, if it's still alive after a
+#                   couple of seconds, it's sent a SIGKILL
+
+---
+ferret:
+  # Ferret uses different binaries to be started and stopped. 
+  :start_binary: script/ferret_server
+  :stop_binary: script/ferret_server
+  # The arguments to be given to the start and stop commands.
+  # Note that this file is processed with Erb, like your views.
+  :start_args: -e <%= RAILS_ENV %> start
+  :stop_args: -e <%= RAILS_ENV %> stop
+  # Time to wait after sending the stop command, before killing the daemon.
+  :delay_before_kill: 0.35
+  # Pattern for the PID file(s) used by the daemon.
+  :pids: tmp/pids/ferret*.pid
+  # daemonz will ignore this daemon configuration when this flag is true
+  :disabled: true

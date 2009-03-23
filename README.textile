@@ -2,18 +2,28 @@ h1. Daemonz
 
 bq. Automatically starts and stops the daemons in a Rails application.
 
+h2. Installation
+
 Install with:
 <pre>
 script/plugin install git://github.com/costan/daemonz.git
 </pre>
 
-Please read and modify the automatically generated config/daemonz.yml. The
-initial version illustrates the setup needed to start ferret and starling. The
-configuration file is ran through Erb, so you can go crazy.
-
 You don't need to do anything in your code for daemonz to work. It will start
 the daemons when your server starts, and stop them when your server exits. It
 does work with multiple servers.
+
+h2. Configuration
+
+The main configuration file is config/daemonz.yml. Daemons are configured by
+individual files in the config/daemonz directory. Configuration files are ran
+through Erb, so you can go crazy. 
+
+Daemonz comes with a few configuration examples that can also be used as they
+are, by removing the <code>:disabled: true</code> line. Please contribute your
+configuration if you think others could use it.
+
+h2. Testing
 
 You can test your daemonz configuration with rake, as shown below. Keep in mind
 that the Rake tasks are only provided for testing, and you should not use them

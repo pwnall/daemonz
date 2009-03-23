@@ -1,0 +1,43 @@
+# Daemonz example: configuration for running starling.
+#
+# daemonz starts the daemons according to the alphabetic order of their 
+# configuration file names. start_order can be used to override this order.
+# Daemons will be stopped in the reverse order of their starting order.
+#
+# daemonz likes to ensure that multiple instances of a daemon don't run at the
+# same time, as this can be fatal for daemons with on-disk state, like ferret.
+# So daemonz ensures that a daemon is dead before starting it, and right after
+# stopping it. This is achieved using the following means:
+#   * Stop commands: first, daemonz uses the stop command supplied in the daemon
+#                    configuration
+#   * PID files: if the daemon has .pid files, daemonz tries to read the file
+#                and find the corresponding processes, then tree-kills them
+#   * Process table: if possible, daemonz dumps the process table, looks for the 
+#                    processes that look like the daemon, and tree-kills them
+#   * Pattern matching: processes whose command lines have the same arguments as
+#                       those given to daemon "look like" that daemon
+#   * Tree killing: a daemon is killed by killing its main process, together
+#                   with all processes descending from that process; a process
+#                   is first sent SIGTERM and, if it's still alive after a
+#                   couple of seconds, it's sent a SIGKILL
+
+---
+starling:
+  # The same binary is used to start and stop starling.
+  :binary: starling
+  # The binary name will not be merged with root_path.
+  :absolute_binary: true
+  :start_args: -d -h 127.0.0.1 -p 16020 -P <%= RAILS_ROOT %>/tmp/pids/starling.pid -q <%= RAILS_ROOT %>/tmp -L <%= RAILS_ROOT %>/log/starling.log
+  # No arguments are needed to stop starling.
+  :stop_args: ''
+  # Pattern for the PID file(s) used by the daemon.
+  :pids: tmp/pids/starling*.pid
+  # Override for the patterns used to identify the daemon's processes.
+  :kill_patterns: <%= RAILS_ROOT %>/log/starling.log
+  # Time to wait after sending the stop command, before killing the daemon.
+  :delay_before_kill: 0.2
+  # Override the daemon startup order. Starling consumer daemons should have
+  # their start_order set to 2, so starling is running when they start.
+  :start_order: 1
+  # daemonz will ignore this daemon configuration when this flag is true
+  :disabled: true
