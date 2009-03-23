@@ -48,18 +48,21 @@ rake daemons:stop  # Stops your daemons (for testing only)
 
 Using the default configuration, daemons are not running during tests. The
 snippet below shows how you can have daemons running during a specific test.
-.bc
-  class DaemonsTest < ActionController::IntegrationTest
-    # If this isn't here, Rails runs the entire test in a transaction, so daemons'
-    # database changes aren't visible. Also, if you share the database with
-    # daemons, sqlite won't cut it.
-    self.use_transactional_fixtures = false
-  
-    test "something needing daemons" do
-      Daemonz.with_daemons do
-        # daemons will be alive while this code is executed
-      end
+<notextile>
+<pre>
+class DaemonsTest < ActionController::IntegrationTest
+  # If this isn't here, Rails runs the entire test in a transaction, so daemons'
+  # database changes aren't visible. Also, if you share the database with
+  # daemons, sqlite won't cut it.
+  self.use_transactional_fixtures = false
+
+  test "something needing daemons" do
+    Daemonz.with_daemons do
+      # daemons will be alive while this code is executed
     end
   end
+end
+</pre>
+</notextile>
 
-Copyright (c) 2008 Victor Costan, released under the MIT license
+p. Copyright (c) 2008 Victor Costan, released under the MIT license
