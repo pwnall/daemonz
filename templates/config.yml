@@ -1,0 +1,87 @@
+# Configuration file for the daemonz plugin.
+#
+# For documentation and examples, refer to the original template in
+# vendor/daemonz/config_template.yml
+
+---
+# Descriptions of the daemons to be managed by daemonz.
+#
+# daemonz starts the daemons according to the alphabetic order of their names.
+# start_order can be used to override this order. Daemons will be stored in the
+# reverse order of their starting order.
+#
+# daemonz likes to ensure that multiple instances of a daemon don't run at the
+# same time, as this can be fatal for daemons with on-disk state, like ferret.
+# So daemonz ensures that a daemon is dead before starting it, and right after
+# stopping it. This is achieved using the following means:
+#   * Stop commands: first, daemonz uses the stop command supplied in the daemon
+#                    configuration
+#   * PID files: if the daemon has .pid files, daemonz tries to read the file
+#                and find the corresponding processes, then tree-kills them
+#   * Process table: if possible, daemonz dumps the process table, looks for the 
+#                    processes that look like the daemon, and tree-kills them
+#   * Pattern matching: processes whose command lines have the same arguments as
+#                       those given to daemon "look like" that daemon
+#   * Tree killing: a daemon is killed by killing its main process, together
+#                   with all processes descending from that process; a process
+#                   is first sent SIGTERM and, if it's still alive after a
+#                   couple of seconds, it's sent a SIGKILL
+:daemons: 
+  # Example: configuring ferret.
+  ferret:
+    # Ferret uses different binaries to be started and stopped. 
+    :start_binary: script/ferret_server
+    :stop_binary: script/ferret_server
+    # The arguments to be given to the start and stop commands.
+    # Note that this file is processed with Erb, like your views.
+    :start_args: -e <%= RAILS_ENV %> start
+    :stop_args: -e <%= RAILS_ENV %> stop
+    # Time to wait after sending the stop command, before killing the daemon.
+    :delay_before_kill: 0.35
+    # Pattern for the PID file(s) used by the daemon.
+    :pids: tmp/pids/ferret*.pid
+    # daemonz will ignore this daemon configuration when this flag is true
+    :disabled: true
+  starling: 
+    # The same binary is used to start and stop starling.
+    :binary: starling
+    # The binary name will not be merged with root_path.
+    :absolute_binary: true
+    :start_args: -d -h 127.0.0.1 -p 16020 -P <%= RAILS_ROOT %>/tmp/pids/starling.pid -q <%= RAILS_ROOT %>/tmp -L <%= RAILS_ROOT %>/log/starling.log
+    # No arguments are needed to stop starling.
+    :stop_args: ''
+    # Pattern for the PID file(s) used by the daemon.
+    :pids: tmp/pids/starling*.pid
+    # Override for the patterns used to identify the daemon's processes.
+    :kill_patterns: <%= RAILS_ROOT %>/log/starling.log
+    # Time to wait after sending the stop command, before killing the daemon.
+    :delay_before_kill: 0.2
+    # Override the daemon startup order. Starling consumer daemons should have
+    # their start_order set to 2, so starling is running when they start.
+    :start_order: 1
+    # daemonz will ignore this daemon configuration when this flag is true
+    :disabled: true
+    
+# The base path for daemon binaries specified in binary, start_binary and
+# stop_binary.
+:root_path: <%= RAILS_ROOT %>
+
+# Where daemonz should log - set to stdout, stderr, or rails.
+:logger: stdout
+
+# Set to true to completely disable daemonz, and not load any plugins.
+:disabled: false
+
+# daemonz is loaded every time the Rails framework is loaded. Sometimes
+# (e.g. when performing migrations) daemons aren't required, so we shouldn't
+# have to wait for the few seconds it takes to start / stop daemons.
+
+# Daemons will not be started / stopped when the name of the binary that's
+# loading Rails ($0) is one of the following.
+:disabled_for: 
+- 'rake'
+- 'script/generate'
+
+# Daemons will not be started for the following environments. 
+:disabled_in:
+- 'test'
