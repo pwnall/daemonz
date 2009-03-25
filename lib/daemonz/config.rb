@@ -92,7 +92,7 @@ module Daemonz
   def self.configure_daemons    
     @daemons = []
     config[:daemons].each do |name, daemon_config|
-      next if config[:disabled]
+      next if daemon_config[:disabled]
       daemon = { :name => name }
             
       # compute the daemon startup / stop commands 
