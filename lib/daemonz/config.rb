@@ -18,12 +18,9 @@ module Daemonz
   def self.disabled_without_cache!
     return true if config[:disabled]
     return true if config[:disabled_in].include? RAILS_ENV
-    config[:disabled_for].each do |suffix|
-      if suffix == $0[-suffix.length, suffix.length]
-        return true
-      end
+    config[:disabled_for].any? do |suffix|
+      suffix == $0[-suffix.length, suffix.length]
     end
-    return false
   end
   
   # figure out the plugin's configuration 

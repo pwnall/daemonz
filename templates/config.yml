@@ -29,6 +29,10 @@
 - 'script/generate'
 - 'script/destroy'
 - 'script/plugin'
+# Assuming you don't want to wait for daemons to start most of the times when
+# you pull up a console. You can always start / stop them up by hand with
+# rake daemons:start / rake daemons:stop, or you can remove the line below.
+- 'irb'
 
 # Daemons will not be started for the following environments. 
 :disabled_in:
