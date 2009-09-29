@@ -25,7 +25,10 @@ end
 
 begin
   require 'sys/proctable'
-    
+  if Sys::ProcTable::VERSION == '0.7.6'
+    raise LoadError, 'Buggy sys/proctable, emulate'
+  end
+  
   module Daemonz::ProcTable
     def self.ps
       # We don't use ps_emulation all the time because sys-proctable is
@@ -37,7 +40,7 @@ begin
       end
     end
   end
-rescue Exception
+rescue LoadError
   # The accelerated version is not available, use the slow version all the time.
   
   module Daemonz::ProcTable
