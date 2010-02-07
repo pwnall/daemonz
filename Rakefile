@@ -1,22 +1,17 @@
-require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
-
-desc 'Default: run unit tests.'
-task :default => :test
-
-desc 'Test the daemonz plugin.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
-end
-
-desc 'Generate documentation for the daemonz plugin.'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'Daemonz'
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+require "rake"
+ 
+begin
+  require "jeweler"
+  Jeweler::Tasks.new do |gem|
+    gem.name = "daemonz"
+    gem.summary = "Automatically starts and stops the daemons in a Rails application"
+    gem.email = "victor@costan.us"
+    gem.homepage = "http://github.com/costan/daemonz"
+    gem.authors = ["Victor Costan"]
+    gem.files = Dir["*", "{lib}/**/*"]
+  end
+  
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end

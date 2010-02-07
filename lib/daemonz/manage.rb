@@ -13,7 +13,7 @@ module Daemonz
   
   # Complete startup used by rake:start and at Rails plug-in startup.
   def self.safe_start(options = {})
-    daemonz_config = File.join(RAILS_ROOT, 'config', 'daemonz.yml')
+    daemonz_config = Rails.root.join 'config', 'daemonz.yml'
     Daemonz.configure daemonz_config, options
     
     if Daemonz.config[:is_master]
@@ -25,7 +25,7 @@ module Daemonz
   # Complete shutdown used by rake:start and at Rails application exit.
   def self.safe_stop(options = {})
     if options[:configure]
-      daemonz_config = File.join(RAILS_ROOT, 'config', 'daemonz.yml')
+      daemonz_config = Rails.root.join 'config', 'daemonz.yml'
       Daemonz.configure daemonz_config, options
     end
     if Daemonz.config[:is_master]

@@ -1,7 +1,4 @@
 # Configuration file for the daemonz plugin.
-#
-# For documentation and examples, refer to the original template in
-# vendor/daemonz/config_template.yml
 
 ---
 :daemons: 
@@ -10,7 +7,7 @@
     
 # The base path for daemon binaries specified in binary, start_binary and
 # stop_binary.
-:root_path: <%= RAILS_ROOT %>
+:root_path: <%= Rails.root %>
 
 # Where daemonz should log - set to stdout, stderr, or rails.
 :logger: stdout

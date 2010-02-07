@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # Load Rails.
-RAILS_ENV = ARGV[1] || 'development'
+ENV['RAILS_ENV'] = ARGV[1] if ARGV[1]
 require File.dirname(__FILE__) + '/../../config/environment.rb'
 
 # TODO: More ARGV-based setup here.
@@ -17,15 +17,15 @@ end
 
 require 'simple-daemon'
 class <%= class_name %> < SimpleDaemon::Base
-  SimpleDaemon::WORKING_DIRECTORY = "#{RAILS_ROOT}/log"
+  SimpleDaemon::WORKING_DIRECTORY = Rails.root.join 'log'
   
   def self.start    
     STDOUT.sync = true
     @logger = Logger.new(STDOUT)
-    @logger.level = RAILS_ENV =~ /prod/ ? Logger::INFO : Logger::DEBUG
-    unless RAILS_ENV =~ /prod/ || RAILS_ENV == 'test'
+    @logger.level = Rails.env.production?
+    if Rails.env.development?
       # Disable SQL logging in debugging.
-			# This is handy if your daemon changes the database often.
+			# This is handy if your daemon queries the database often.
       ActiveRecord::Base.logger.level = Logger::INFO
     end
 		

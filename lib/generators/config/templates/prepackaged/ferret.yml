@@ -28,8 +28,8 @@ ferret:
   :stop_binary: script/ferret_server
   # The arguments to be given to the start and stop commands.
   # Note that this file is processed with Erb, like your views.
-  :start_args: -e <%= RAILS_ENV %> start
-  :stop_args: -e <%= RAILS_ENV %> stop
+  :start_args: -e <%= Rails.env %> start
+  :stop_args: -e <%= Rails.env %> stop
   # Time to wait after sending the stop command, before killing the daemon.
   :delay_before_kill: 0.35
   # Pattern for the PID file(s) used by the daemon.

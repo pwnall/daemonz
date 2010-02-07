@@ -1,9 +1,9 @@
 require 'fileutils'
-daemonz_config_dir = File.join RAILS_ROOT, 'config', 'daemonz'
+daemonz_config_dir = Rails.root.join 'config', 'daemonz'
 template_dir = File.join File.dirname(__FILE__), 'templates'
 
 # copy the main config file, daemonz.yml
-daemonz_config_main = File.join RAILS_ROOT, 'config', 'daemonz.yml'
+daemonz_config_main = Rails.root.join 'config', 'daemonz.yml'
 unless File.exist? daemonz_config_main
   FileUtils.cp File.join(template_dir, 'config.yml'), daemonz_config_main
 end

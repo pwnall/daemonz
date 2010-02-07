@@ -27,13 +27,13 @@ starling:
   :binary: starling
   # The binary name will not be merged with root_path.
   :absolute_binary: true
-  :start_args: -d -h 127.0.0.1 -p 16020 -P <%= RAILS_ROOT %>/tmp/pids/starling.pid -q <%= RAILS_ROOT %>/tmp -L <%= RAILS_ROOT %>/log/starling.log
+  :start_args: -d -h 127.0.0.1 -p 16020 -P <%= Rails.root.join 'tmp', 'pids', 'starling.pid' %> -q <%= Rails.root.join 'tmp' %> -L <%= Rails.root.join 'log', 'starling.log' %>
   # No arguments are needed to stop starling.
   :stop_args: ''
   # Pattern for the PID file(s) used by the daemon.
   :pids: tmp/pids/starling*.pid
   # Override for the patterns used to identify the daemon's processes.
-  :kill_patterns: <%= RAILS_ROOT %>/log/starling.log
+  :kill_patterns: <%= Rails.root.join 'log', 'starling.log' %>
   # Time to wait after sending the stop command, before killing the daemon.
   :delay_before_kill: 0.2
   # Override the daemon startup order. Starling consumer daemons should have

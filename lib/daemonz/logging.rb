@@ -1,5 +1,5 @@
 module Daemonz
-  @logger = RAILS_DEFAULT_LOGGER
+  @logger = Rails.logger
   class <<self
     attr_reader :logger
   end
@@ -13,7 +13,9 @@ module Daemonz
       @logger = Logger.new(STDERR)
       @logger.level = Logger::DEBUG
     when 'rails'
-      @logger = RAILS_DEFAULT_LOGGER
+      @logger = Rails.logger
+    else
+      @logger = Rails.logger   
     end
   end
 end

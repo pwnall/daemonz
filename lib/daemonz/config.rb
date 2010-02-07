@@ -17,7 +17,7 @@ module Daemonz
   
   def self.disabled_without_cache!
     return true if config[:disabled]
-    return true if config[:disabled_in].include? RAILS_ENV
+    return true if config[:disabled_in].include? Rails.root
     config[:disabled_for].any? do |suffix|
       suffix == $0[-suffix.length, suffix.length]
     end
@@ -27,7 +27,7 @@ module Daemonz
   def self.configure(config_file, options = {})
     load_configuration config_file
     
-    config[:root_path] ||= RAILS_ROOT
+    config[:root_path] ||= Rails.root
     if options[:force_enabled]
       config[:disabled] = false
       config[:disabled_for] = []
@@ -38,7 +38,7 @@ module Daemonz
       config[:disabled_in] ||= ['test']
     end
     config[:disabled] = false if config[:disabled] == 'false'
-    config[:master_file] ||= File.join RAILS_ROOT, "tmp", "pids", "daemonz.master.pid"
+    config[:master_file] ||= Rails.root.join "tmp", "pids", "daemonz.master.pid"
     
     config[:logger] &&= options[:override_logger]
     self.configure_logger
