@@ -4,9 +4,14 @@ bq. Automatically starts and stops the daemons in a Rails application.
 
 h2. Installation
 
-Install with:
+Add the following entry to your Gemfile:
 <pre>
-script/plugin install git://github.com/costan/daemonz.git
+gem 'daemonz'
+</pre>
+
+After running <code>bundle install</code> generate the default configuration:
+<pre>
+rails g daemonz:config
 </pre>
 
 You don't need to do anything in your code for daemonz to work. It will start
@@ -31,7 +36,7 @@ The scaffolded code includes the configuration file, a daemon skeleton using the
 <code>simple-daemon</code> gem, and an integration test skeleton.
 
 <pre>
-script/generate daemon YourDaemonName
+rails g daemon YourDaemonName
 </pre>
 
 h2. Testing

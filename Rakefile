@@ -9,6 +9,8 @@ begin
     gem.homepage = "http://github.com/costan/daemonz"
     gem.authors = ["Victor Costan"]
     gem.files = Dir["*", "{lib}/**/*"]
+    gem.add_dependency 'simple-daemon'
+    gem.add_dependency 'zerg_support'
   end
   
   Jeweler::GemcutterTasks.new

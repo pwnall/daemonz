@@ -9,7 +9,4 @@ require 'daemonz/manage.rb'
 require 'daemonz/master.rb'
 require 'daemonz/process.rb'
 
-if defined?(Rails)
-  require 'daemonz/railtie'
-  require 'daemonz/engine'
-end
+require 'daemonz/railtie.rb' if defined?(Rails)

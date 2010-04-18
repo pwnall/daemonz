@@ -3,8 +3,8 @@
 ---
 :daemons: 
   # Daemon configurations placed here will be read as if they were in a file in
-  # config/daemonz. This is less maintainable if you have more than one daemon.
-    
+  # config/daemonz. This is more maintainable if you only have one daemon.
+
 # The base path for daemon binaries specified in binary, start_binary and
 # stop_binary.
 :root_path: <%= Rails.root %>

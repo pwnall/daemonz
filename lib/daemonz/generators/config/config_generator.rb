@@ -11,7 +11,7 @@ class ConfigGenerator < Rails::Generators::Base
   def create_configuration
     copy_file 'config.yml', 'config/daemonz.yml'
     
-    directory 'config/daemonz'
+    empty_directory 'config/daemonz'
     copy_file 'prepackaged/ferret.yml', 'config/daemonz/ferret.yml'
     copy_file 'prepackaged/starling.yml', 'config/daemonz/starling.yml'
   end  

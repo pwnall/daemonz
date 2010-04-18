@@ -1,7 +1,8 @@
 module Daemonz
   @logger = Rails.logger
-  class <<self
-    attr_reader :logger
+  
+  def self.logger
+    @logger || Rails.logger
   end
   
   def self.configure_logger

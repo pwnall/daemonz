@@ -57,7 +57,6 @@ module Daemonz
     pinfo = process_info()
     pinfo.each do |pid, info|
       next unless process_patterns.all? { |pattern| info[:cmdline].index pattern }
-      p logger
       logger.warn "Killing #{pid}: #{pinfo[pid][:cmdline]}" if options[:verbose]
       Process.kill 'TERM', pid.to_i
     end

@@ -77,7 +77,7 @@ module Daemonz
       end
     else
       logger.warn "Daemonz configuration not found - #{config_file}"
-      @config = {}
+      @config = { :disabled => true }
     end
   end
   

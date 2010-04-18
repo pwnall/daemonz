@@ -9,13 +9,13 @@ class DaemonGenerator < Rails::Generators::NamedBase
   end
   
   def create_harness
-    directory 'config/daemonz'
+    empty_directory 'config/daemonz'
     template "config.yml", "config/daemonz/#{file_name}.yml"
       
-    directory 'script/background'
+    empty_directory 'script/background'
     template 'daemon.rb.erb', "script/background/#{file_name}.rb"
       
-    directory 'test/integration'
+    empty_directory 'test/integration'
     template 'integration_test.rb.erb', "test/integration/#{file_name}_test.rb"
   end
 end  # class Daemon::Generators::DaemonGenerator
